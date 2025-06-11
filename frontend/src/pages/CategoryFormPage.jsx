@@ -23,7 +23,6 @@ function CategoryFormPage() {
 
   return (
     <>
-      <HeaderComponent />
       <div className="container mt-3">
         <div className="border-bottom pb-3 mb-3">
           <h3>Nueva Categoría</h3>

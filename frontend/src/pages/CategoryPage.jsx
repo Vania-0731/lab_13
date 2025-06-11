@@ -32,7 +32,6 @@ function CategoryPage() {
 
   return (
     <>
-      <HeaderComponent />
       <div className="container mt-3">
         <div className="d-flex justify-content-between border-bottom pb-3 mb-3 align-items-center">
           <h3>Categorías</h3>
