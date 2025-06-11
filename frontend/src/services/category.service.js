@@ -22,7 +22,7 @@ export const updateCategoryService = async (id, data)=>{
     return response;
 };
 
-export const deleteSerieService = async (id)=>{
+export const deleteCategoryService = async (id)=>{
     const response = await axios.delete(`${PREFIX_URL}${id}/`);
     return response;
 };
