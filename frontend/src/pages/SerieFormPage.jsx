@@ -2,6 +2,7 @@ import HeaderComponent from "../components/HeaderComponent";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { createSerieService } from "../services/serie.service"; // 👈 IMPORTANTE
 
 function SerieFormPage() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ function SerieFormPage() {
     };
 
     try {
-      await axios.post("http://127.0.0.1:8000/series/api/v1/series/", dataToSend);
+      await createSerieService(dataToSend); // 👈 USO DEL SERVICIO
       navigate("/series");
     } catch (error) {
       console.error("Error creando la serie", error);

@@ -1,7 +1,8 @@
 import HeaderComponent from "../components/HeaderComponent";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { showSerieService, updateSerieService } from "../services/serie.service"; // ← importa tu servicio
+import axios from "axios"; // aún se usa para obtener categorías
 
 function SerieEditFormPage() {
   const navigate = useNavigate();
@@ -17,7 +18,9 @@ function SerieEditFormPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/series/api/v1/categories/");
+        const response = await axios.get(
+          "http://localhost:8000/series/api/v1/categories/"
+        );
         setCategories(response.data);
       } catch (error) {
         console.error("Error al cargar categorías", error);
@@ -26,7 +29,7 @@ function SerieEditFormPage() {
 
     const fetchSerie = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/series/api/v1/series/${idserie}/`);
+        const response = await showSerieService(idserie); // ← aquí usa el service
         const serie = response.data;
         setNombre(serie.name);
         setReleaseDate(serie.release_date);
@@ -57,7 +60,7 @@ function SerieEditFormPage() {
         category: categoria,
         image: imagenURL.trim() || null,
       };
-      await axios.put(`http://localhost:8000/series/api/v1/series/${idserie}/`, serieActualizada);
+      await updateSerieService(idserie, serieActualizada); // ← aquí usa el service
       navigate("/series");
     } catch (error) {
       console.error("Error al actualizar la serie", error);
@@ -65,7 +68,8 @@ function SerieEditFormPage() {
     }
   };
 
-  const previewURL = imagenURL.trim() || "https://dummyimage.com/400x250/000/fff&text=preview";
+  const previewURL =
+    imagenURL.trim() || "https://dummyimage.com/400x250/000/fff&text=preview";
 
   return (
     <>
@@ -80,12 +84,18 @@ function SerieEditFormPage() {
               className="card-img-top"
               src={previewURL}
               alt="preview"
-              style={{ aspectRatio: "16 / 10", objectFit: "cover", width: "100%" }}
+              style={{
+                aspectRatio: "16 / 10",
+                objectFit: "cover",
+                width: "100%",
+              }}
             />
           </div>
           <div className="col-md-8">
             <div className="mb-3">
-              <label htmlFor="inputName" className="form-label">Nombre</label>
+              <label htmlFor="inputName" className="form-label">
+                Nombre
+              </label>
               <input
                 type="text"
                 className="form-control"
@@ -96,7 +106,9 @@ function SerieEditFormPage() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="inputReleaseDate" className="form-label">Fecha de Lanzamiento</label>
+              <label htmlFor="inputReleaseDate" className="form-label">
+                Fecha de Lanzamiento
+              </label>
               <input
                 type="date"
                 className="form-control"
@@ -107,7 +119,9 @@ function SerieEditFormPage() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="inputRating" className="form-label">Rating</label>
+              <label htmlFor="inputRating" className="form-label">
+                Rating
+              </label>
               <input
                 type="number"
                 className="form-control"
@@ -119,7 +133,9 @@ function SerieEditFormPage() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="inputCategory" className="form-label">Categoría</label>
+              <label htmlFor="inputCategory" className="form-label">
+                Categoría
+              </label>
               <select
                 className="form-select"
                 id="inputCategory"
@@ -129,14 +145,22 @@ function SerieEditFormPage() {
               >
                 <option value="">Seleccione una opción</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.url || `http://localhost:8000/series/api/v1/categories/${cat.id}/`}>
+                  <option
+                    key={cat.id}
+                    value={
+                      cat.url ||
+                      `http://localhost:8000/series/api/v1/categories/${cat.id}/`
+                    }
+                  >
                     {cat.description}
                   </option>
                 ))}
               </select>
             </div>
             <div className="mb-3">
-              <label htmlFor="inputImageURL" className="form-label">URL de la Imagen</label>
+              <label htmlFor="inputImageURL" className="form-label">
+                URL de la Imagen
+              </label>
               <input
                 type="url"
                 className="form-control"
@@ -146,11 +170,14 @@ function SerieEditFormPage() {
                 placeholder="https://..."
               />
               <small className="form-text text-muted">
-                Puedes pegar la URL de una imagen externa. Si está vacío, se usará una imagen dummy.
+                Puedes pegar la URL de una imagen externa. Si está vacío, se
+                usará una imagen dummy.
               </small>
             </div>
             <div className="mb-3">
-              <button className="btn btn-primary me-2" type="submit">Guardar</button>
+              <button className="btn btn-primary me-2" type="submit">
+                Guardar
+              </button>
               <button
                 type="button"
                 className="btn btn-secondary"

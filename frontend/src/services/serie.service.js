@@ -10,13 +10,11 @@ return response;
 export const createSerieService = async (data)=>{
 const response = await axios.post(PREFIX_URL, data);
 return response;
-
 };
 
 export const showSerieService = async (id)=>{
 const response = await axios.get(`${PREFIX_URL}${id}/`);
 return response;
-
 };
 
 export const updateSerieService = async (id, datos)=>{
@@ -27,5 +25,4 @@ return response;
 export const deleteSerieService = async (id)=>{
 const response = await axios.delete(`${PREFIX_URL}${id}/`);
 return response;
-
 };
