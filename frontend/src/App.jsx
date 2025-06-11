@@ -9,6 +9,8 @@ import SerieFormPage from "./pages/SerieFormPage";
 import CategoryFormPage from "./pages/CategoryFormPage";
 import CategoryEditFormPage from "./pages/CategoryEditFormPage";
 import SerieEditFormPage from "./pages/SerieEditFormPage";
+import 'react-toastify/dist/ReactToastify.css'; 
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
         <Route path="/categories/new" element={<CategoryFormPage />} />
         <Route path="/categories/edit/:id" element={<CategoryEditFormPage />} />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }
