@@ -6,6 +6,7 @@ import ConfirmModal from "../components/ConfirmModal";
 import { NavLink } from "react-router-dom";
 import FooterComponent from "../components/FooterComponent";
 import SearchComponent from "../components/SearchComponent";
+import { getAllSerieService, deleteSerieService,} from "../services/serie.service.js";
 
 function SeriePage() {
   const [series, setSeries] = useState([]);
@@ -25,12 +26,14 @@ function SeriePage() {
   };
 
   const loadCategories = async () => {
-    const resp = await axios.get("http://127.0.0.1:8000/series/api/v1/categories/");
+    const resp = await axios.get(
+      "http://127.0.0.1:8000/series/api/v1/categories/"
+    );
     setCategories(resp.data);
   };
 
   const loadSeries = async () => {
-    const resp = await axios.get("http://127.0.0.1:8000/series/api/v1/series/");
+    const resp = await getAllSerieService();
     const seriesConDescripcion = resp.data.map((serie) => {
       const catId = extractIdFromUrl(serie.category);
       const cat = categories.find((c) => c.id === catId);
@@ -66,8 +69,12 @@ function SeriePage() {
   };
 
   const seriesFiltradas = series.filter((serie) => {
-    const cumpleFiltroNombre = serie.name.toLowerCase().includes(filtro.toLowerCase());
-    const cumpleFiltroFavorito = mostrarSoloFavoritos ? favoritos.includes(serie.id) : true;
+    const cumpleFiltroNombre = serie.name
+      .toLowerCase()
+      .includes(filtro.toLowerCase());
+    const cumpleFiltroFavorito = mostrarSoloFavoritos
+      ? favoritos.includes(serie.id)
+      : true;
     return cumpleFiltroNombre && cumpleFiltroFavorito;
   });
 
@@ -76,11 +83,16 @@ function SeriePage() {
     setModalVisible(true);
   }
 
-  function confirmarEliminacion() {
-    setSeries((prev) => prev.filter((s) => s.id !== serieAEliminar));
-    setFavoritos((prev) => prev.filter((favId) => favId !== serieAEliminar));
-    setModalVisible(false);
-    setSerieAEliminar(null);
+  async function confirmarEliminacion() {
+    try {
+      await deleteSerieService(serieAEliminar); // llamada al servicio
+      setSeries((prev) => prev.filter((s) => s.id !== serieAEliminar));
+      setFavoritos((prev) => prev.filter((favId) => favId !== serieAEliminar));
+      setModalVisible(false);
+      setSerieAEliminar(null);
+    } catch (error) {
+      console.error("Error eliminando la serie:", error);
+    }
   }
 
   function cancelarEliminacion() {
@@ -105,7 +117,9 @@ function SeriePage() {
           <SearchComponent onSearch={setFiltro} />
           <button
             className={`btn ${
-              mostrarSoloFavoritos ? "btn-warning text-nowrap" : "btn-outline-secondary text-nowrap"
+              mostrarSoloFavoritos
+                ? "btn-warning text-nowrap"
+                : "btn-outline-secondary text-nowrap"
             }`}
             onClick={() => setMostrarSoloFavoritos((prev) => !prev)}
           >
@@ -137,7 +151,9 @@ function SeriePage() {
 
       <ConfirmModal
         visible={modalVisible}
-        message={`¿Seguro que quieres eliminar ${series.find((s) => s.id === serieAEliminar)?.name}?`}
+        message={`¿Seguro que quieres eliminar ${
+          series.find((s) => s.id === serieAEliminar)?.name
+        }?`}
         onConfirm={confirmarEliminacion}
         onCancel={cancelarEliminacion}
       />

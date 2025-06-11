@@ -1,18 +1,17 @@
 import HeaderComponent from "../components/HeaderComponent";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import axios from "axios";
+import { showCategoryService, updateCategoryService } from "../services/category.service";
 
 function CategoryEditFormPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-
   const [description, setDescripcion] = useState("");
 
   useEffect(() => {
     const fetchCategoria = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/series/api/v1/categories/${id}/`);
+        const response = await showCategoryService(id);
         setDescripcion(response.data.description);
       } catch (error) {
         console.error("Error al obtener la categoría", error);
@@ -29,10 +28,10 @@ function CategoryEditFormPage() {
 
     try {
       const categoriaActualizada = { description };
-      await axios.put(`http://localhost:8000/series/api/v1/categories/${id}/`, categoriaActualizada);
+      await updateCategoryService(id, categoriaActualizada);
       navigate("/categories");
     } catch (error) {
-      console.log("Error al actualizar la categoría.", error);
+      console.error("Error al actualizar la categoría.", error);
       alert("Hubo un error al guardar los cambios.");
     }
   };
