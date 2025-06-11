@@ -1,17 +1,14 @@
 import { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import axios from "axios";
 import HeaderComponent from "../components/HeaderComponent";
+import { getAllCategoryService, deleteCategoryService } from "../services/category.service";
 
 function CategoryPage() {
-  const urlApi = 'http://localhost:8000/series/api/v1/categories/';
-
   const [categories, setCategories] = useState([]);
 
   const loadData = async () => {
-    const resp = await axios.get(urlApi);
-    console.log(resp.data);
+    const resp = await getAllCategoryService();
     setCategories(resp.data);
   };
 
@@ -20,10 +17,14 @@ function CategoryPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Está seguro de eliminar este registro?')) {
-      await axios.delete(`${urlApi}${id}/`);
-      const nLista = categories.filter(item => item.id !== id);
-      setCategories(nLista);
+    if (window.confirm("¿Está seguro de eliminar este registro?")) {
+      try {
+        await deleteCategoryService(id);
+        const nLista = categories.filter((item) => item.id !== id);
+        setCategories(nLista);
+      } catch (error) {
+        console.error("Error eliminando categoría:", error);
+      }
     }
   };
 
