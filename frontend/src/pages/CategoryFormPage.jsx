@@ -1,7 +1,6 @@
 import HeaderComponent from "../components/HeaderComponent";
 import { useState} from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 function CategoryFormPage() {
   const navigate = useNavigate();
@@ -13,12 +12,12 @@ function CategoryFormPage() {
     if (!description.trim()) return;
 
     try {
-      const nuevaCategoria = {description: description}
-      await axios.post("http://localhost:8000/series/api/v1/categories/", nuevaCategoria);
+      const nuevaCategoria = { description };
+      await createCategoryService(nuevaCategoria);
       navigate("/categories");
     } catch (error) {
-      console.log("Error al crear la categoría.", error)
-      alert("Hubo un error al guardar la categoría.")
+      console.error("Error al crear la categoría:", error);
+      alert("Hubo un error al guardar la categoría.");
     }
   };
 
